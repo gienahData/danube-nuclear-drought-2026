@@ -3,6 +3,9 @@
 
 **Working paper · September 2026**  
 Tünde Szabó · szabo.tunde@geoinsight.hu
+Szabó, T. (2026). Transboundary Climate–Nuclear Risk on the Danube:
+Evidence from the August 2026 Drought Event. Working paper, September 2026.
+https://doi.org/10.5281/zenodo22411012.
 
 ---
 

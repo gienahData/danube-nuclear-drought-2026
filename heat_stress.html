@@ -1,0 +1,468 @@
+<title>Danube Nuclear Heat Stress</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+
+<style>
+:root {
+  --bg:      #F0EDE6;
+  --card:    #FCFAF6;
+  --ink:     #1C1915;
+  --ink2:    #5A5550;
+  --ink3:    #968E84;
+  --border:  #DDD9D0;
+  --grid:    #E8E4DA;
+  --surface: #FCFAF6;
+  --paks:    #2560A0;
+  --kozlo:   #3D7A55;
+  --cerna:   #922020;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg:#181614;--card:#201E1B;--surface:#201E1B;
+    --ink:#E4DFD5;--ink2:#9A9088;--ink3:#5A5248;
+    --border:#2E2C28;--grid:#252320;
+    --paks:#5B91D8;--kozlo:#65AD80;--cerna:#C25555;
+  }
+}
+:root[data-theme="dark"] {
+  --bg:#181614;--card:#201E1B;--surface:#201E1B;
+  --ink:#E4DFD5;--ink2:#9A9088;--ink3:#5A5248;
+  --border:#2E2C28;--grid:#252320;
+  --paks:#5B91D8;--kozlo:#65AD80;--cerna:#C25555;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:14px}
+body{
+  font-family:'IBM Plex Sans',system-ui,sans-serif;
+  background:var(--bg);color:var(--ink);
+  padding:2rem 1rem 3.5rem;min-height:100vh;
+}
+.wrap{max-width:880px;margin:0 auto}
+
+.hd-row{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;margin-bottom:.5rem}
+.eyebrow{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--ink3);margin-bottom:.45rem;
+}
+h1{
+  font-family:'Spectral',Georgia,serif;
+  font-size:clamp(17px,3vw,25px);font-weight:600;
+  line-height:1.25;text-wrap:balance;
+}
+.subtitle{
+  font-size:12.5px;color:var(--ink2);line-height:1.6;
+  max-width:78ch;margin-bottom:1.4rem;margin-top:.4rem;
+}
+.theme-btn{
+  background:none;border:1px solid var(--border);border-radius:2px;
+  padding:4px 9px;font:11px 'IBM Plex Mono',monospace;
+  color:var(--ink3);cursor:pointer;flex-shrink:0;
+}
+.theme-btn:hover{color:var(--ink)}
+
+/* ── Stats ── */
+.stats{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:1px;background:var(--border);
+  border:1px solid var(--border);border-radius:2px;
+  overflow:hidden;margin-bottom:1.1rem;
+}
+.stat{background:var(--card);padding:11px 14px 9px}
+.stat-label{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:9px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--ink3);margin-bottom:3px;
+}
+.stat-val{
+  font-family:'Spectral',Georgia,serif;
+  font-size:21px;font-weight:600;
+  font-variant-numeric:tabular-nums;line-height:1;margin-bottom:3px;
+}
+.stat-note{font-size:9.5px;color:var(--ink3);line-height:1.45}
+
+/* ── Chart card ── */
+.card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:2px;margin-bottom:.7rem;position:relative;
+}
+.legend-row{
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  padding:9px 14px;border-bottom:1px solid var(--border);
+}
+.l-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--ink2)}
+.l-line{width:18px;height:2.5px;border-radius:2px;flex-shrink:0}
+.l-swatch{width:13px;height:8px;border-radius:1px;flex-shrink:0;opacity:.6}
+.l-div{width:1px;height:12px;background:var(--border)}
+
+#chart{width:100%;height:auto;display:block}
+
+/* ── Tooltip ── */
+.tt{
+  position:absolute;background:var(--card);border:1px solid var(--border);
+  border-radius:2px;padding:9px 12px;font-size:11.5px;
+  pointer-events:none;opacity:0;transition:opacity .07s;
+  box-shadow:0 4px 14px rgba(0,0,0,.10);min-width:195px;z-index:10;
+}
+.tt.vis{opacity:1}
+.tt-date{font-family:'IBM Plex Mono',monospace;font-size:9.5px;color:var(--ink3);margin-bottom:6px}
+.tt-row{display:flex;align-items:center;gap:5px;margin-bottom:2px}
+.tt-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.tt-name{color:var(--ink2);font-size:11px;flex:1}
+.tt-val{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--ink);font-variant-numeric:tabular-nums}
+.tt-con{font-size:9.5px;color:var(--ink3);margin-top:6px;padding-top:5px;border-top:1px solid var(--grid)}
+
+/* ── Tier 3 callout ── */
+.t3{
+  border-left:3px solid #922020;background:var(--card);
+  border:1px solid var(--border);border-left:3px solid #922020;
+  border-radius:2px;padding:10px 14px;
+  font-size:12px;color:var(--ink2);line-height:1.6;
+  margin-bottom:.7rem;
+}
+.t3 strong{color:var(--ink)}
+
+/* ── Source ── */
+.src{
+  font-family:'IBM Plex Mono',monospace;font-size:9px;
+  color:var(--ink3);line-height:1.7;
+}
+.src strong{color:var(--ink2);font-weight:500}
+</style>
+
+<div class="wrap">
+  <div class="hd-row">
+    <div>
+      <p class="eyebrow">Danube Drought · July–August 2026 · Szabó (2026)</p>
+      <h1>A 29-Year Discharge Record Curtailed Nuclear Generation<br>Across Three EU Countries Simultaneously</h1>
+    </div>
+    <button class="theme-btn" id="themeBtn">◑ Theme</button>
+  </div>
+  <p class="subtitle">
+    Daily capacity factors at three Danube nuclear plants during the summer 2026 drought. Background shading marks the binding physical constraint each day —
+    thermal (water too warm) or hydraulic (river too low). Vertical markers show the documented escalation events; hover for daily detail.
+  </p>
+
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-label">Total corridor loss</div>
+      <div class="stat-val">1,784 GWh</div>
+      <div class="stat-note">Paks 888 + Cernavodă 884 + Kozloduy 11.8 · ENTSO-E TR 16.1.A r3</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Discharge return period</div>
+      <div class="stat-val">29-year low</div>
+      <div class="stat-note">1,087 m³/s at Paks · EFAS v5 1999–2026 · empirical rank 1/28</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Joint event rarity</div>
+      <div class="stat-val">~103 years</div>
+      <div class="stat-note">Gumbel copula τ = 0.55 · vs ~841 yr under independence assumption</div>
+    </div>
+  </div>
+
+  <div class="card" id="chartCard">
+    <div class="legend-row">
+      <span class="l-item"><span class="l-line" style="background:var(--paks)"></span>Paks · HU · 1,880 MW</span>
+      <span class="l-item"><span class="l-line" style="background:var(--kozlo)"></span>Kozloduy · BG · ~2,000 MW</span>
+      <span class="l-item"><span class="l-line" style="background:var(--cerna)"></span>Cernavodă · RO · 1,400 MW</span>
+      <span class="l-div"></span>
+      <span class="l-item"><span class="l-swatch" style="background:#C25A00"></span>Thermal constraint</span>
+      <span class="l-item"><span class="l-swatch" style="background:#1A5C9B"></span>Hydraulic constraint</span>
+    </div>
+    <svg id="chart" role="img" aria-label="Capacity factor time series for Paks, Kozloduy, Cernavodă during August 2026 Danube drought"></svg>
+    <div class="tt" id="tt"></div>
+  </div>
+
+  <div class="t3">
+    <strong>→ Tier 3 — Nuclear safety constraint (Cernavodă, from 3 September 2026):</strong>
+    After both reactors entered cold shutdown, Cernavodă escalated to a decay-heat-removal constraint as the Danube–Black Sea Canal intake basin level dropped below safe margins —
+    the first such nuclear safety escalation attributed to drought documented in the European electricity record.
+    Source: Nuclearelectrica press release, 1 Aug 2026 (independent verification of the Sep 3 trigger date pending primary source confirmation).
+  </div>
+
+  <p class="src">
+    <strong>Paks:</strong> ICPDR DanubeHIS HU442540_HYDRO (Dombori), primary data CC BY 4.0. ·
+    <strong>Kozloduy &amp; Cernavodă:</strong> ERA5-Land 2 m temperature → Mohseni nonlinear model (Piccolroaz et al. 2016); GloFAS v5 discharge. ·
+    <strong>Capacity model:</strong> CF = min(CF_thermal, CF_hydraulic); thresholds per OAH/CNCAN/BNRA licence conditions and Van Vliet et al. (2012). ·
+    <strong>Caveat:</strong> Mohseni model underestimates peak inlet T by 3.9°C at Paks; downstream-plant temperatures may be similarly underestimated.
+  </p>
+</div>
+
+<script>
+/* ── Data (schematic model, primary anchors from ENTSO-E/DanubeHIS/EFAS) ── */
+const RAW=[{"date":"2026-07-01","plant":"Paks","cf":0.0357,"mw":71.3,"binding":"THERMAL","gauge_cm":-19.2,"temp_c":29.82},{"date":"2026-07-01","plant":"Kozloduy","cf":0.8165,"mw":1633.0,"binding":"THERMAL","flow_m3s":3396.7,"temp_c":25.1},{"date":"2026-07-01","plant":"Cernavodă","cf":0.5196,"mw":727.5,"binding":"THERMAL","flow_m3s":4008.1,"temp_c":25.84},{"date":"2026-07-02","plant":"Paks","cf":0.2292,"mw":458.3,"binding":"THERMAL","gauge_cm":-22.3,"temp_c":28.85},{"date":"2026-07-02","plant":"Kozloduy","cf":1.0,"mw":2000.0,"binding":"THERMAL","flow_m3s":3406.5,"temp_c":23.89},{"date":"2026-07-02","plant":"Cernavodă","cf":0.7095,"mw":993.3,"binding":"THERMAL","flow_m3s":3985.5,"temp_c":24.32},{"date":"2026-07-03","plant":"Paks","cf":0.3608,"mw":721.7,"binding":"THERMAL","gauge_cm":-13.2,"temp_c":28.2},{"date":"2026-07-03","plant":"Kozloduy","cf":0.964,"mw":1928.0,"binding":"THERMAL","flow_m3s":3408.0,"temp_c":24.22},{"date":"2026-07-03","plant":"Cernavodă","cf":0.7996,"mw":1119.5,"binding":"THERMAL","flow_m3s":3996.8,"temp_c":23.6},{"date":"2026-07-04","plant":"Paks","cf":0.4765,"mw":953.0,"binding":"THERMAL","gauge_cm":8.5,"temp_c":27.62},{"date":"2026-07-04","plant":"Kozloduy","cf":0.9525,"mw":1905.0,"binding":"THERMAL","flow_m3s":3133.7,"temp_c":24.28},{"date":"2026-07-04","plant":"Cernavodă","cf":0.7138,"mw":999.3,"binding":"THERMAL","flow_m3s":3988.2,"temp_c":24.29},{"date":"2026-07-05","plant":"Paks","cf":0.6017,"mw":1203.3,"binding":"THERMAL","gauge_cm":33.3,"temp_c":26.99},{"date":"2026-07-05","plant":"Kozloduy","cf":1.0,"mw":2000.0,"binding":"THERMAL","flow_m3s":2757.2,"temp_c":21.83},{"date":"2026-07-05","plant":"Cernavodă","cf":1.0,"mw":1400.0,"binding":"THERMAL","flow_m3s":3908.7,"temp_c":21.24},{"date":"2026-07-06","plant":"Paks","cf":0.7483,"mw":1496.7,"binding":"THERMAL","gauge_cm":41.0,"temp_c":26.26},{"date":"2026-07-06","plant":"Kozloduy","cf":1.0,"mw":2000.0,"binding":"THERMAL","flow_m3s":2545.5,"temp_c":22.81},{"date":"2026-07-06","plant":"Cernavodă","cf":1.0,"mw":1400.0,"binding":"THERMAL","flow_m3s":3642.3,"temp_c":20.94},{"date":"2026-07-07","plant":"Paks","cf":0.7575,"mw":1515.0,"binding":"THERMAL","gauge_cm":16.1,"temp_c":26.21},{"date":"2026-07-07","plant":"Kozloduy","cf":1.0,"mw":2000.0,"binding":"THERMAL","flow_m3s":2433.5,"temp_c":23.22},{"date":"2026-07-07","plant":"Cernavodă","cf":1.0,"mw":1400.0,"binding":"THERMAL","flow_m3s":3312.1,"temp_c":21.77},{"date":"2026-07-08","plant":"Paks","cf":0.8225,"mw":1645.0,"binding":"THERMAL","gauge_cm":-16.5,"temp_c":25.89},{"date":"2026-07-08","plant":"Kozloduy","cf":1.0,"mw":2000.0,"binding":"THERMAL","flow_m3s":2399.1,"temp_c":22.96},{"date":"2026-07-08","plant":"Cernavodă","cf":0.9043,"mw":1266.0,"binding":"THERMAL","flow_m3s":3068.6,"temp_c":22.77},{"date":"2026-07-09","plant":"Paks","cf":0.9258,"mw":1851.7,"binding":"THERMAL","gauge_cm":-35.7,"temp_c":25.37},{"date":"2026-07-09","plant":"Kozloduy","cf":1.0,"mw":2000.0,"binding":"THERMAL","flow_m3s":2476.6,"temp_c":23.68},{"date":"2026-07-09","plant":"Cernavodă","cf":0.8929,"mw":1250.0,"binding":"THERMAL","flow_m3s":2924.2,"temp_c":22.86},{"date":"2026-07-10","plant":"Paks","cf":0.8642,"mw":1728.3,"binding":"THERMAL","gauge_cm":-41.5,"temp_c":25.68},{"date":"2026-07-10","plant":"Kozloduy","cf":1.0,"mw":2000.0,"binding":"THERMAL","flow_m3s":2676.7,"temp_c":19.92},{"date":"2026-07-10","plant":"Cernavodă","cf":1.0,"mw":1400.0,"binding":"THERMAL","flow_m3s":2867.9,"temp_c":20.27},{"date":"2026-07-11","plant":"Paks","cf":0.7767,"mw":1553.3,"binding":"THERMAL","gauge_cm":-39.5,"temp_c":26.12},{"date":"2026-07-11","plant":"Kozloduy","cf":1.0,"mw":2000.0,"binding":"THERMAL","flow_m3s":2862.4,"temp_c":19.9},{"date":"2026-07-11","plant":"Cernavodă","cf":1.0,"mw":1400.0,"binding":"THERMAL","flow_m3s":2919.4,"temp_c":21.84},{"date":"2026-07-12","plant":"Paks","cf":0.7675,"mw":1535.0,"binding":"THERMAL","gauge_cm":-36.9,"temp_c":26.16},{"date":"2026-07-12","plant":"Kozloduy","cf":0.9898,"mw":1979.7,"binding":"THERMAL","flow_m3s":2914.8,"temp_c":24.06},{"date":"2026-07-12","plant":"Cernavodă","cf":1.0,"mw":1400.0,"binding":"THERMAL","flow_m3s":3076.6,"temp_c":21.2},{"date":"2026-07-13","plant":"Paks","cf":0.7675,"mw":1535.0,"binding":"THERMAL","gauge_cm":-46.5,"temp_c":26.16},{"date":"2026-07-13","plant":"Kozloduy","cf":1.0,"mw":2000.0,"binding":"THERMAL","flow_m3s":2860.8,"temp_c":22.59},{"date":"2026-07-13","plant":"Cernavodă","cf":0.9133,"mw":1278.6,"binding":"THERMAL","flow_m3s":3236.5,"temp_c":22.69},{"date":"2026-07-14","plant":"Paks","cf":0.6375,"mw":1275.0,"binding":"THERMAL","gauge_cm":-60.0,"temp_c":26.81},{"date":"2026-07-14","plant":"Kozloduy","cf":1.0,"mw":2000.0,"binding":"THERMAL","flow_m3s":2759.9,"temp_c":22.83},{"date":"2026-07-14","plant":"Cernavodă","cf":1.0,"mw":1400.0,"binding":"THERMAL","flow_m3s":3295.3,"temp_c":21.1},{"date":"2026-07-15","plant":"Paks","cf":0.4567,"mw":913.3,"binding":"THERMAL","gauge_cm":-70.7,"temp_c":27.72},{"date":"2026-07-15","plant":"Kozloduy","cf":1.0,"mw":2000.0,"binding":"THERMAL","flow_m3s":2657.4,"temp_c":23.61},{"date":"2026-07-15","plant":"Cernavodă","cf":0.8831,"mw":1236.4,"binding":"THERMAL","flow_m3s":3254.9,"temp_c":22.94},{"date":"2026-07-16","plant":"Paks","cf":0.3933,"mw":786.7,"binding":"THERMAL","gauge_cm":-76.0,"temp_c":28.03},{"date":"2026-07-16","plant":"Kozloduy","cf":0.8305,"mw":1661.0,"binding":"THERMAL","flow_m3s":2576.6,"temp_c":25.02},{"date":"2026-07-16","plant":"Cernavodă","cf":0.8883,"mw":1243.6,"binding":"THERMAL","flow_m3s":3159.1,"temp_c":22.89},{"date":"2026-07-17","plant":"Paks","cf":0.3217,"mw":643.3,"binding":"THERMAL","gauge_cm":-83.4,"temp_c":28.39},{"date":"2026-07-17","plant":"Kozloduy","cf":1.0,"mw":2000.0,"binding":"THERMAL","flow_m3s":2513.6,"temp_c":23.98},{"date":"2026-07-17","plant":"Cernavodă","cf":0.6926,"mw":969.7,"binding":"THERMAL","flow_m3s":3053.4,"temp_c":24.46},{"date":"2026-07-18","plant":"Paks","cf":0.2817,"mw":563.3,"binding":"THERMAL","gauge_cm":-84.0,"temp_c":28.59},{"date":"2026-07-18","plant":"Kozloduy","cf":0.8548,"mw":1709.7,"binding":"THERMAL","flow_m3s":2460.7,"temp_c":24.87},{"date":"2026-07-18","plant":"Cernavodă","cf":0.8229,"mw":1152.0,"binding":"THERMAL","flow_m3s":2963.5,"temp_c":23.42},{"date":"2026-07-19","plant":"Paks","cf":0.2825,"mw":565.0,"binding":"THERMAL","gauge_cm":-75.2,"temp_c":28.59},{"date":"2026-07-19","plant":"Kozloduy","cf":0.8322,"mw":1664.3,"binding":"THERMAL","flow_m3s":2410.4,"temp_c":25.01},{"date":"2026-07-19","plant":"Cernavodă","cf":0.7588,"mw":1062.2,"binding":"THERMAL","flow_m3s":2891.4,"temp_c":23.93},{"date":"2026-07-20","plant":"Paks","cf":0.4092,"mw":818.3,"binding":"THERMAL","gauge_cm":-59.9,"temp_c":27.95},{"date":"2026-07-20","plant":"Kozloduy","cf":0.8483,"mw":1696.7,"binding":"THERMAL","flow_m3s":2365.4,"temp_c":24.91},{"date":"2026-07-20","plant":"Cernavodă","cf":0.7969,"mw":1115.6,"binding":"THERMAL","flow_m3s":2831.7,"temp_c":23.62},{"date":"2026-07-21","plant":"Paks","cf":0.4867,"mw":973.3,"binding":"THERMAL","gauge_cm":-51.2,"temp_c":27.57},{"date":"2026-07-21","plant":"Kozloduy","cf":0.8843,"mw":1768.7,"binding":"THERMAL","flow_m3s":2329.5,"temp_c":24.69},{"date":"2026-07-21","plant":"Cernavodă","cf":0.7301,"mw":1022.2,"binding":"THERMAL","flow_m3s":2786.8,"temp_c":24.16},{"date":"2026-07-22","plant":"Paks","cf":0.6292,"mw":1258.3,"binding":"THERMAL","gauge_cm":-56.6,"temp_c":26.85},{"date":"2026-07-22","plant":"Kozloduy","cf":0.9003,"mw":1800.7,"binding":"THERMAL","flow_m3s":2309.1,"temp_c":24.6},{"date":"2026-07-22","plant":"Cernavodă","cf":0.9114,"mw":1275.9,"binding":"THERMAL","flow_m3s":2781.4,"temp_c":22.71},{"date":"2026-07-23","plant":"Paks","cf":0.8158,"mw":1631.7,"binding":"THERMAL","gauge_cm":-64.4,"temp_c":25.92},{"date":"2026-07-23","plant":"Kozloduy","cf":1.0,"mw":2000.0,"binding":"THERMAL","flow_m3s":2319.1,"temp_c":19.8},{"date":"2026-07-23","plant":"Cernavodă","cf":1.0,"mw":1400.0,"binding":"THERMAL","flow_m3s":2851.1,"temp_c":19.59},{"date":"2026-07-24","plant":"Paks","cf":0.9317,"mw":1863.3,"binding":"THERMAL","gauge_cm":-67.2,"temp_c":25.34},{"date":"2026-07-24","plant":"Kozloduy","cf":1.0,"mw":2000.0,"binding":"THERMAL","flow_m3s":2347.9,"temp_c":20.27},{"date":"2026-07-24","plant":"Cernavodă","cf":1.0,"mw":1400.0,"binding":"THERMAL","flow_m3s":2875.1,"temp_c":19.08},{"date":"2026-07-25","plant":"Paks","cf":0.9225,"mw":1845.0,"binding":"THERMAL","gauge_cm":-73.1,"temp_c":25.39},{"date":"2026-07-25","plant":"Kozloduy","cf":1.0,"mw":2000.0,"binding":"THERMAL","flow_m3s":2377.1,"temp_c":19.93},{"date":"2026-07-25","plant":"Cernavodă","cf":1.0,"mw":1400.0,"binding":"THERMAL","flow_m3s":2872.8,"temp_c":20.07},{"date":"2026-07-26","plant":"Paks","cf":0.9125,"mw":1825.0,"binding":"THERMAL","gauge_cm":-83.5,"temp_c":25.44},{"date":"2026-07-26","plant":"Kozloduy","cf":1.0,"mw":2000.0,"binding":"THERMAL","flow_m3s":2410.6,"temp_c":20.49},{"date":"2026-07-26","plant":"Cernavodă","cf":1.0,"mw":1400.0,"binding":"THERMAL","flow_m3s":2878.2,"temp_c":19.82},{"date":"2026-07-27","plant":"Paks","cf":0.8494,"mw":1698.9,"binding":"HYDRAULIC","gauge_cm":-88.1,"temp_c":25.55},{"date":"2026-07-27","plant":"Kozloduy","cf":0.9988,"mw":1997.7,"binding":"THERMAL","flow_m3s":2454.8,"temp_c":24.01},{"date":"2026-07-27","plant":"Cernavodă","cf":0.9704,"mw":1358.5,"binding":"THERMAL","flow_m3s":2889.9,"temp_c":22.24},{"date":"2026-07-28","plant":"Paks","cf":0.7485,"mw":1496.9,"binding":"HYDRAULIC","gauge_cm":-93.6,"temp_c":25.8},{"date":"2026-07-28","plant":"Kozloduy","cf":0.7732,"mw":1546.3,"binding":"THERMAL","flow_m3s":2496.2,"temp_c":25.36},{"date":"2026-07-28","plant":"Cernavodă","cf":0.7468,"mw":1045.4,"binding":"THERMAL","flow_m3s":2907.3,"temp_c":24.03},{"date":"2026-07-29","plant":"Paks","cf":0.598,"mw":1196.0,"binding":"HYDRAULIC","gauge_cm":-101.7,"temp_c":26.18},{"date":"2026-07-29","plant":"Kozloduy","cf":1.0,"mw":2000.0,"binding":"THERMAL","flow_m3s":2515.8,"temp_c":22.74},{"date":"2026-07-29","plant":"Cernavodă","cf":1.0,"mw":1400.0,"binding":"THERMAL","flow_m3s":2926.6,"temp_c":20.67},{"date":"2026-07-30","plant":"Paks","cf":0.49,"mw":979.9,"binding":"HYDRAULIC","gauge_cm":-107.5,"temp_c":26.82},{"date":"2026-07-30","plant":"Kozloduy","cf":0.9373,"mw":1874.7,"binding":"THERMAL","flow_m3s":2501.5,"temp_c":24.38},{"date":"2026-07-30","plant":"Cernavodă","cf":1.0,"mw":1400.0,"binding":"THERMAL","flow_m3s":2938.7,"temp_c":21.65},{"date":"2026-07-31","plant":"Paks","cf":0.4259,"mw":851.9,"binding":"HYDRAULIC","gauge_cm":-111.0,"temp_c":27.48},{"date":"2026-07-31","plant":"Kozloduy","cf":0.8408,"mw":1681.7,"binding":"THERMAL","flow_m3s":2450.0,"temp_c":24.96},{"date":"2026-07-31","plant":"Cernavodă","cf":0.8912,"mw":1247.7,"binding":"THERMAL","flow_m3s":2930.4,"temp_c":22.87},{"date":"2026-08-01","plant":"Paks","cf":0.3086,"mw":617.3,"binding":"HYDRAULIC","gauge_cm":-117.3,"temp_c":27.77},{"date":"2026-08-01","plant":"Kozloduy","cf":0.8952,"mw":1790.3,"binding":"THERMAL","flow_m3s":2373.2,"temp_c":24.63},{"date":"2026-08-01","plant":"Cernavodă","cf":1.0,"mw":1400.0,"binding":"THERMAL","flow_m3s":2892.8,"temp_c":20.55},{"date":"2026-08-02","plant":"Paks","cf":0.2299,"mw":459.9,"binding":"HYDRAULIC","gauge_cm":-121.6,"temp_c":27.68},{"date":"2026-08-02","plant":"Kozloduy","cf":0.9833,"mw":1966.7,"binding":"THERMAL","flow_m3s":2285.9,"temp_c":24.1},{"date":"2026-08-02","plant":"Cernavodă","cf":1.0,"mw":1400.0,"binding":"THERMAL","flow_m3s":2825.4,"temp_c":21.64},{"date":"2026-08-03","plant":"Paks","cf":0.1766,"mw":353.3,"binding":"HYDRAULIC","gauge_cm":-124.5,"temp_c":26.92},{"date":"2026-08-03","plant":"Kozloduy","cf":0.9573,"mw":1914.7,"binding":"THERMAL","flow_m3s":2199.9,"temp_c":24.26},{"date":"2026-08-03","plant":"Cernavodă","cf":1.0,"mw":1400.0,"binding":"THERMAL","flow_m3s":2739.6,"temp_c":20.43},{"date":"2026-08-04","plant":"Paks","cf":0.0,"mw":0.0,"binding":"HYDRAULIC","gauge_cm":-138.0,"temp_c":28.8},{"date":"2026-08-04","plant":"Kozloduy","cf":1.0,"mw":2000.0,"binding":"THERMAL","flow_m3s":2122.5,"temp_c":23.93},{"date":"2026-08-04","plant":"Cernavodă","cf":0.7462,"mw":1044.7,"binding":"THERMAL","flow_m3s":2645.6,"temp_c":24.03},{"date":"2026-08-05","plant":"Paks","cf":0.0,"mw":0.0,"binding":"HYDRAULIC","gauge_cm":-134.2,"temp_c":29.67},{"date":"2026-08-05","plant":"Kozloduy","cf":0.8483,"mw":1696.7,"binding":"THERMAL","flow_m3s":2056.4,"temp_c":24.91},{"date":"2026-08-05","plant":"Cernavodă","cf":0.7754,"mw":1085.5,"binding":"THERMAL","flow_m3s":2552.6,"temp_c":23.8},{"date":"2026-08-06","plant":"Paks","cf":0.0509,"mw":101.9,"binding":"HYDRAULIC","gauge_cm":-131.2,"temp_c":29.32},{"date":"2026-08-06","plant":"Kozloduy","cf":0.7802,"mw":1560.3,"binding":"THERMAL","flow_m3s":2000.0,"temp_c":25.32},{"date":"2026-08-06","plant":"Cernavodă","cf":0.822,"mw":1150.8,"binding":"THERMAL","flow_m3s":2466.8,"temp_c":23.42},{"date":"2026-08-07","plant":"Paks","cf":0.1327,"mw":265.4,"binding":"HYDRAULIC","gauge_cm":-126.8,"temp_c":28.89},{"date":"2026-08-07","plant":"Kozloduy","cf":0.7707,"mw":1541.3,"binding":"THERMAL","flow_m3s":1949.1,"temp_c":25.38},{"date":"2026-08-07","plant":"Cernavodă","cf":0.8927,"mw":1249.7,"binding":"HYDRAULIC","flow_m3s":2392.7,"temp_c":22.8},{"date":"2026-08-08","plant":"Paks","cf":0.1481,"mw":296.3,"binding":"HYDRAULIC","gauge_cm":-126.0,"temp_c":28.12},{"date":"2026-08-08","plant":"Kozloduy","cf":0.7815,"mw":1563.0,"binding":"THERMAL","flow_m3s":1899.9,"temp_c":25.31},{"date":"2026-08-08","plant":"Cernavodă","cf":0.5929,"mw":830.0,"binding":"THERMAL","flow_m3s":2329.9,"temp_c":25.26},{"date":"2026-08-09","plant":"Paks","cf":0.125,"mw":250.0,"binding":"HYDRAULIC","gauge_cm":-127.2,"temp_c":27.92},{"date":"2026-08-09","plant":"Kozloduy","cf":0.7928,"mw":1585.7,"binding":"THERMAL","flow_m3s":1853.2,"temp_c":25.24},{"date":"2026-08-09","plant":"Cernavodă","cf":0.7658,"mw":1072.1,"binding":"THERMAL","flow_m3s":2272.7,"temp_c":23.87},{"date":"2026-08-10","plant":"Paks","cf":0.2793,"mw":558.6,"binding":"HYDRAULIC","gauge_cm":-118.9,"temp_c":28.06},{"date":"2026-08-10","plant":"Kozloduy","cf":0.8665,"mw":1733.0,"binding":"THERMAL","flow_m3s":1808.2,"temp_c":24.8},{"date":"2026-08-10","plant":"Cernavodă","cf":0.7208,"mw":1009.1,"binding":"HYDRAULIC","flow_m3s":2220.8,"temp_c":23.05},{"date":"2026-08-11","plant":"Paks","cf":0.3542,"mw":708.3,"binding":"THERMAL","gauge_cm":-103.6,"temp_c":28.23},{"date":"2026-08-11","plant":"Kozloduy","cf":0.939,"mw":1878.0,"binding":"THERMAL","flow_m3s":1767.9,"temp_c":24.37},{"date":"2026-08-11","plant":"Cernavodă","cf":0.6741,"mw":943.8,"binding":"HYDRAULIC","flow_m3s":2174.1,"temp_c":21.5},{"date":"2026-08-12","plant":"Paks","cf":0.4725,"mw":945.0,"binding":"THERMAL","gauge_cm":-100.2,"temp_c":27.64},{"date":"2026-08-12","plant":"Kozloduy","cf":0.8118,"mw":1623.7,"binding":"THERMAL","flow_m3s":1733.1,"temp_c":25.13},{"date":"2026-08-12","plant":"Cernavodă","cf":0.6264,"mw":877.0,"binding":"HYDRAULIC","flow_m3s":2126.4,"temp_c":22.45},{"date":"2026-08-13","plant":"Paks","cf":0.5015,"mw":1003.1,"binding":"HYDRAULIC","gauge_cm":-106.9,"temp_c":27.07},{"date":"2026-08-13","plant":"Kozloduy","cf":0.7715,"mw":1543.0,"binding":"THERMAL","flow_m3s":1703.8,"temp_c":25.37},{"date":"2026-08-13","plant":"Cernavodă","cf":0.5791,"mw":810.8,"binding":"HYDRAULIC","flow_m3s":2079.1,"temp_c":24.07},{"date":"2026-08-14","plant":"Paks","cf":0.4321,"mw":864.2,"binding":"HYDRAULIC","gauge_cm":-110.7,"temp_c":27.02},{"date":"2026-08-14","plant":"Kozloduy","cf":0.7991,"mw":1598.1,"binding":"HYDRAULIC","flow_m3s":1679.4,"temp_c":24.26},{"date":"2026-08-14","plant":"Cernavodă","cf":0.5397,"mw":755.6,"binding":"HYDRAULIC","flow_m3s":2039.7,"temp_c":19.13},{"date":"2026-08-15","plant":"Paks","cf":0.3843,"mw":768.5,"binding":"HYDRAULIC","gauge_cm":-113.2,"temp_c":27.01},{"date":"2026-08-15","plant":"Kozloduy","cf":0.7795,"mw":1559.1,"binding":"HYDRAULIC","flow_m3s":1667.7,"temp_c":23.64},{"date":"2026-08-15","plant":"Cernavodă","cf":0.5081,"mw":711.4,"binding":"HYDRAULIC","flow_m3s":2008.1,"temp_c":18.0},{"date":"2026-08-16","plant":"Paks","cf":0.3364,"mw":672.8,"binding":"HYDRAULIC","gauge_cm":-115.8,"temp_c":26.99},{"date":"2026-08-16","plant":"Kozloduy","cf":0.8026,"mw":1605.3,"binding":"HYDRAULIC","flow_m3s":1681.6,"temp_c":22.72},{"date":"2026-08-16","plant":"Cernavodă","cf":0.4816,"mw":674.3,"binding":"HYDRAULIC","flow_m3s":1981.6,"temp_c":17.84},{"date":"2026-08-17","plant":"Paks","cf":0.2346,"mw":469.1,"binding":"HYDRAULIC","gauge_cm":-121.3,"temp_c":26.95},{"date":"2026-08-17","plant":"Kozloduy","cf":0.8674,"mw":1734.7,"binding":"HYDRAULIC","flow_m3s":1720.4,"temp_c":22.41},{"date":"2026-08-17","plant":"Cernavodă","cf":0.4631,"mw":648.3,"binding":"HYDRAULIC","flow_m3s":1963.1,"temp_c":19.17},{"date":"2026-08-18","plant":"Paks","cf":0.1852,"mw":370.4,"binding":"HYDRAULIC","gauge_cm":-124.0,"temp_c":26.31},{"date":"2026-08-18","plant":"Kozloduy","cf":0.9271,"mw":1854.2,"binding":"HYDRAULIC","flow_m3s":1756.3,"temp_c":24.12},{"date":"2026-08-18","plant":"Cernavodă","cf":0.4622,"mw":647.0,"binding":"HYDRAULIC","flow_m3s":1962.2,"temp_c":21.03},{"date":"2026-08-19","plant":"Paks","cf":0.1127,"mw":225.3,"binding":"HYDRAULIC","gauge_cm":-127.9,"temp_c":25.91},{"date":"2026-08-19","plant":"Kozloduy","cf":0.9322,"mw":1864.4,"binding":"HYDRAULIC","flow_m3s":1759.3,"temp_c":23.86},{"date":"2026-08-19","plant":"Cernavodă","cf":0.4851,"mw":679.2,"binding":"HYDRAULIC","flow_m3s":1985.1,"temp_c":23.93},{"date":"2026-08-20","plant":"Paks","cf":0.0579,"mw":115.7,"binding":"HYDRAULIC","gauge_cm":-130.9,"temp_c":26.05},{"date":"2026-08-20","plant":"Kozloduy","cf":0.8852,"mw":1770.4,"binding":"HYDRAULIC","flow_m3s":1731.1,"temp_c":24.0},{"date":"2026-08-20","plant":"Cernavodă","cf":0.5157,"mw":721.9,"binding":"HYDRAULIC","flow_m3s":2015.7,"temp_c":22.56},{"date":"2026-08-21","plant":"Paks","cf":0.0965,"mw":192.9,"binding":"HYDRAULIC","gauge_cm":-128.8,"temp_c":26.31},{"date":"2026-08-21","plant":"Kozloduy","cf":0.6723,"mw":1344.7,"binding":"THERMAL","flow_m3s":1684.3,"temp_c":25.97},{"date":"2026-08-21","plant":"Cernavodă","cf":0.5269,"mw":737.6,"binding":"HYDRAULIC","flow_m3s":2026.9,"temp_c":23.05},{"date":"2026-08-22","plant":"Paks","cf":0.4034,"mw":806.8,"binding":"HYDRAULIC","gauge_cm":-112.2,"temp_c":26.03},{"date":"2026-08-22","plant":"Kozloduy","cf":0.6557,"mw":1311.3,"binding":"THERMAL","flow_m3s":1632.3,"temp_c":26.07},{"date":"2026-08-22","plant":"Cernavodă","cf":0.5088,"mw":712.3,"binding":"HYDRAULIC","flow_m3s":2008.8,"temp_c":21.98},{"date":"2026-08-23","plant":"Paks","cf":0.8233,"mw":1646.6,"binding":"HYDRAULIC","gauge_cm":-89.5,"temp_c":25.8},{"date":"2026-08-23","plant":"Kozloduy","cf":0.642,"mw":1284.1,"binding":"HYDRAULIC","flow_m3s":1585.2,"temp_c":26.08},{"date":"2026-08-23","plant":"Cernavodă","cf":0.4695,"mw":657.3,"binding":"HYDRAULIC","flow_m3s":1969.5,"temp_c":23.01},{"date":"2026-08-24","plant":"Paks","cf":0.7408,"mw":1481.7,"binding":"THERMAL","gauge_cm":-73.3,"temp_c":26.3},{"date":"2026-08-24","plant":"Kozloduy","cf":0.5735,"mw":1147.0,"binding":"HYDRAULIC","flow_m3s":1544.1,"temp_c":25.37},{"date":"2026-08-24","plant":"Cernavodă","cf":0.4203,"mw":588.5,"binding":"HYDRAULIC","flow_m3s":1920.4,"temp_c":22.95},{"date":"2026-08-25","plant":"Paks","cf":0.755,"mw":1510.0,"binding":"THERMAL","gauge_cm":-61.0,"temp_c":26.22},{"date":"2026-08-25","plant":"Kozloduy","cf":0.5314,"mw":1062.8,"binding":"HYDRAULIC","flow_m3s":1518.8,"temp_c":24.9},{"date":"2026-08-25","plant":"Cernavodă","cf":0.3714,"mw":519.9,"binding":"HYDRAULIC","flow_m3s":1871.4,"temp_c":23.28}];
+
+/* ── Config ── */
+const PLANTS=[
+  {key:'Paks',      rated:2000,country:'HU'},
+  {key:'Kozloduy',  rated:2000,country:'BG'},
+  {key:'Cernavodă', rated:1400,country:'RO'},
+];
+
+/* Two-shelf event timeline
+   shelf 0 = label above midline dot, shelf 1 = label below */
+const EVENTS=[
+  {date:'2026-07-01', l1:'Thermal peak', l2:'Paks inlet 29.8°C', color:'#B05800', shelf:0},
+  {date:'2026-07-27', l1:'Hydraulic binding', l2:'gauge −88 cm', color:'#1A5C9B', shelf:0},
+  {date:'2026-07-28', l1:'Cernavodă U1 offline', l2:'ENTSO-E confirmed', color:'#922020', shelf:1},
+  {date:'2026-08-04', l1:'Paks: 0 MW', l2:'discharge minimum', color:'#922020', shelf:0},
+  {date:'2026-08-13', l1:'Cernavodă U2 offline', l2:'full outage', color:'#922020', shelf:1},
+  {date:'2026-08-25', l1:'Paks restart', l2:'all 8 TGs', color:'#296B42', shelf:0},
+];
+
+/* ── SVG layout ── */
+const VW=860, ML=56, MR=18, CW=VW-ML-MR;
+const STRIP=96,   // event annotation strip height
+      LH=22,      // plant label row
+      PH=88,      // chart panel height
+      GAP=18,
+      XH=40;      // x-axis area
+const SVG_H=STRIP+3*(LH+PH)+2*GAP+XH;
+
+// chart-area top y for each panel
+const PT=[0,1,2].map(i=>STRIP+LH+i*(LH+PH+GAP));
+
+/* ── Date scale ── */
+const D0=+new Date('2026-07-01'), D1=+new Date('2026-08-25'), DR=D1-D0;
+const xD=dt=>ML+(+new Date(dt)-D0)/DR*CW;
+const yP=(pi,cf)=>PT[pi]+PH*(1-cf);
+
+/* ── SVG helpers ── */
+const NS='http://www.w3.org/2000/svg';
+const el=(t,a,p)=>{ const e=document.createElementNS(NS,t); for(const[k,v] of Object.entries(a)) e.setAttribute(k,v); p&&p.appendChild(e); return e; };
+const tx=(s,a,p)=>{ const e=el('text',a,p); e.textContent=s; return e; };
+const cv=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+
+/* ── Organize data ── */
+const byP={}, byD={};
+PLANTS.forEach(p=>byP[p.key]=[]);
+RAW.forEach(d=>{ if(byP[d.plant])byP[d.plant].push(d); });
+const dates=[...new Set(RAW.map(d=>d.date))].sort();
+dates.forEach(dt=>byD[dt]={});
+RAW.forEach(d=>byD[d.date][d.plant]=d);
+
+/* ── Build SVG ── */
+const svg=document.getElementById('chart');
+svg.setAttribute('viewBox',`0 0 ${VW} ${SVG_H}`);
+const refresh=()=>build(svg);
+
+function plantColor(key){
+  const m={Paks:cv('--paks'),Kozloduy:cv('--kozlo'),'Cernavodă':cv('--cerna')};
+  return m[key]||'#666';
+}
+
+function build(svg){
+  while(svg.firstChild)svg.removeChild(svg.firstChild);
+
+  // SVG background
+  el('rect',{x:0,y:0,width:VW,height:SVG_H,fill:cv('--surface')},svg);
+
+  /* ── Event strip background ── */
+  el('rect',{x:0,y:0,width:VW,height:STRIP,fill:'rgba(0,0,0,0.025)'},svg);
+
+  /* ── Event strip label ── */
+  tx('Key events',{x:ML,y:11,'text-anchor':'start',
+    fill:cv('--ink3'),font:`8px 'IBM Plex Mono',monospace`,'letter-spacing':'.1em'},svg);
+
+  /* ── Strip midline ── */
+  const GY=STRIP-26; // dot y-position
+  el('line',{x1:ML,x2:ML+CW,y1:GY,y2:GY,
+    stroke:cv('--border'),'stroke-width':.75},svg);
+
+  /* ── Event markers ── */
+  const MONO=`'IBM Plex Mono',monospace`;
+  EVENTS.forEach(ev=>{
+    const x=xD(ev.date);
+    // anchor: avoid clipping at edges
+    const anc=x<ML+55?'start':x>ML+CW-55?'end':'middle';
+
+    if(ev.shelf===0){
+      // label above, tick upward
+      el('line',{x1:x,x2:x,y1:GY-5,y2:GY-16,
+        stroke:ev.color,'stroke-width':1.2},svg);
+      tx(ev.l1,{x,y:GY-22,'text-anchor':anc,
+        fill:ev.color,font:`600 8.5px ${MONO}`},svg);
+      tx(ev.l2,{x,y:GY-11,'text-anchor':anc,
+        fill:ev.color,font:`7.5px ${MONO}`,opacity:.75},svg);
+    } else {
+      // label below, tick downward
+      el('line',{x1:x,x2:x,y1:GY+5,y2:GY+16,
+        stroke:ev.color,'stroke-width':1.2},svg);
+      tx(ev.l1,{x,y:GY+25,'text-anchor':anc,
+        fill:ev.color,font:`600 8.5px ${MONO}`},svg);
+      tx(ev.l2,{x,y:GY+36,'text-anchor':anc,
+        fill:ev.color,font:`7.5px ${MONO}`,opacity:.75},svg);
+    }
+
+    // dot on midline
+    el('circle',{cx:x,cy:GY,r:3.5,fill:ev.color},svg);
+
+    // vertical guide through all panels
+    const yTop=PT[0], yBot=PT[2]+PH;
+    el('line',{x1:x,x2:x,y1:yTop,y2:yBot,
+      stroke:ev.color,'stroke-width':.8,
+      'stroke-dasharray':'3 2.5',opacity:.55},svg);
+  });
+
+  /* ── Panels ── */
+  PLANTS.forEach((plant,pi)=>{
+    const yTop=PT[pi], yBot=PT[pi]+PH;
+    const pc=plantColor(plant.key);
+    const g=el('g',{},svg);
+
+    // Panel background
+    el('rect',{x:ML,y:yTop,width:CW,height:PH,
+      fill:cv('--surface'),stroke:cv('--border'),'stroke-width':.75},g);
+
+    // Constraint shading (per day)
+    const dayW=CW/(dates.length-1);
+    dates.forEach((dt,di)=>{
+      const r=byD[dt][plant.key]; if(!r)return;
+      const x=xD(dt)-dayW*.5;
+      let fill=null;
+      if(r.cf===0) fill='rgba(140,20,20,.20)';
+      else if(r.binding==='THERMAL') fill='rgba(178,88,0,.09)';
+      else if(r.binding==='HYDRAULIC') fill='rgba(26,92,155,.11)';
+      if(fill) el('rect',{x,y:yTop,width:dayW+.5,height:PH,fill},g);
+    });
+
+    // Grid lines: 0%, 50%, 100%
+    [0,.5,1].forEach(v=>{
+      const y=yP(pi,v);
+      el('line',{x1:ML,x2:ML+CW,y1:y,y2:y,
+        stroke:v===1?cv('--border'):cv('--grid'),
+        'stroke-width':v===1?.75:.5,
+        'stroke-dasharray':v===1?'none':'4 3'},g);
+      // Y-axis tick labels (left of panel)
+      if(v<1){
+        tx(`${Math.round(v*100)}%`,{
+          x:ML-5,y:y+3.5,'text-anchor':'end',
+          fill:cv('--ink3'),font:`8.5px ${MONO}`},g);
+      }
+    });
+    tx('100%',{x:ML-5,y:yTop+3.5,'text-anchor':'end',
+      fill:cv('--ink3'),font:`8.5px ${MONO}`},g);
+
+    // Area fill (clipped)
+    const defs=el('defs',{},g);
+    const clipId=`cp${pi}`;
+    const clip=el('clipPath',{id:clipId},defs);
+    el('rect',{x:ML,y:yTop,width:CW,height:PH},clip);
+
+    const pts=byP[plant.key];
+    const first=pts[0], last=pts[pts.length-1];
+    const areaD=`M${xD(first.date).toFixed(1)},${yBot} `+
+      pts.map(d=>`L${xD(d.date).toFixed(1)},${yP(pi,d.cf).toFixed(1)}`).join(' ')+
+      ` L${xD(last.date).toFixed(1)},${yBot} Z`;
+    el('path',{d:areaD,fill:pc,opacity:.11,'clip-path':`url(#${clipId})`},g);
+
+    // Line
+    el('polyline',{
+      points:pts.map(d=>`${xD(d.date).toFixed(1)},${yP(pi,d.cf).toFixed(1)}`).join(' '),
+      fill:'none',stroke:pc,'stroke-width':2,
+      'stroke-linejoin':'round','stroke-linecap':'round',
+      'clip-path':`url(#${clipId})`,
+    },g);
+
+    // Panel frame (over shading)
+    el('rect',{x:ML,y:yTop,width:CW,height:PH,
+      fill:'none',stroke:cv('--border'),'stroke-width':.75},g);
+
+    // Plant label row (above panel)
+    const yLbl=yTop-LH+14;
+    tx(plant.key,{x:ML+4,y:yLbl,
+      fill:pc,font:`600 11px 'IBM Plex Sans',sans-serif`,'letter-spacing':'.01em'},svg);
+    const meta=plant.key==='Paks'?'Hungary · VVER-440 · 1,880 MW':
+                plant.key==='Kozloduy'?'Bulgaria · VVER-1000 · ~2,000 MW':
+                'Romania · CANDU-6 · 1,400 MW';
+    tx(meta,{x:ML+50,y:yLbl,
+      fill:cv('--ink3'),font:`8.5px ${MONO}`},svg);
+  });
+
+  /* ── X-axis ── */
+  const xAxisY=PT[2]+PH;
+  el('line',{x1:ML,x2:ML+CW,y1:xAxisY,y2:xAxisY,
+    stroke:cv('--border'),'stroke-width':.75},svg);
+
+  // Week ticks & day labels
+  for(let d=new Date('2026-07-01');+d<=+new Date('2026-08-25');d.setDate(d.getDate()+7)){
+    const x=xD(d.toISOString().slice(0,10));
+    el('line',{x1:x,x2:x,y1:xAxisY,y2:xAxisY+5,
+      stroke:cv('--border'),'stroke-width':.75},svg);
+    const lbl=d.getDate()===1?d.toLocaleDateString('en',{month:'short'}):String(d.getDate());
+    tx(lbl,{x,y:xAxisY+14,'text-anchor':'middle',
+      fill:cv('--ink3'),font:`8.5px ${MONO}`},svg);
+  }
+  // Month labels
+  ['2026-07-01','2026-08-01'].forEach(dt=>{
+    const x=xD(dt);
+    const lbl=new Date(dt).toLocaleDateString('en',{month:'long',year:'numeric'});
+    tx(lbl,{x:x+4,y:xAxisY+28,'text-anchor':'start',
+      fill:cv('--ink2'),font:`9px 'IBM Plex Sans',sans-serif`,'font-style':'italic'},svg);
+    // faint month boundary through all panels
+    el('line',{x1:x,x2:x,y1:PT[0],y2:PT[2]+PH,
+      stroke:cv('--border'),'stroke-width':.5,'stroke-dasharray':'3 3'},svg);
+  });
+
+  /* ── Interactive crosshair overlay ── */
+  const ch=el('line',{x1:0,x2:0,y1:PT[0],y2:PT[2]+PH,
+    stroke:cv('--ink3'),'stroke-width':.75,
+    'stroke-dasharray':'4 3',opacity:0},svg);
+  const hit=el('rect',{x:ML,y:PT[0],width:CW,height:PT[2]+PH-PT[0],
+    fill:'transparent',cursor:'crosshair'},svg);
+
+  const tt=document.getElementById('tt');
+  const card=document.getElementById('chartCard');
+
+  hit.addEventListener('mousemove',e=>{
+    const r=svg.getBoundingClientRect();
+    const sx=(e.clientX-r.left)*VW/r.width;
+    if(sx<ML||sx>ML+CW)return;
+    const ts=D0+(sx-ML)/CW*DR;
+    const nearest=dates.reduce((b,dt)=>Math.abs(+new Date(dt)-ts)<Math.abs(+new Date(b)-ts)?dt:b);
+    const cx=xD(nearest);
+    ch.setAttribute('x1',cx);ch.setAttribute('x2',cx);ch.setAttribute('opacity',1);
+
+    const day=byD[nearest];
+    const dl=new Date(nearest).toLocaleDateString('en',{month:'short',day:'numeric',year:'numeric'});
+    let h=`<div class="tt-date">${dl}</div>`;
+    PLANTS.forEach(p=>{
+      const d=day[p.key]; if(!d)return;
+      const mw=d.mw.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,' ');
+      h+=`<div class="tt-row">
+        <span class="tt-dot" style="background:${plantColor(p.key)}"></span>
+        <span class="tt-name">${p.key}</span>
+        <span class="tt-val">${mw} MW (${(d.cf*100).toFixed(1)}%)</span>
+      </div>`;
+    });
+    const pd=day['Paks'];
+    if(pd){
+      const con=pd.binding==='HYDRAULIC'?'Hydraulic (river level)':'Thermal (discharge temp)';
+      const detail=pd.binding==='HYDRAULIC'?`gauge ${pd.gauge_cm} cm`:`inlet ${pd.temp_c} °C`;
+      h+=`<div class="tt-con">Paks constraint: ${con}<br>${detail}</div>`;
+    }
+    tt.innerHTML=h;
+    const cr=card.getBoundingClientRect();
+    let lft=(e.clientX-cr.left)+16;
+    if(lft+205>cr.width)lft=(e.clientX-cr.left)-210;
+    tt.style.left=lft+'px';
+    tt.style.top=(e.clientY-cr.top-50)+'px';
+    tt.classList.add('vis');
+  });
+  hit.addEventListener('mouseleave',()=>{
+    ch.setAttribute('opacity',0);tt.classList.remove('vis');
+  });
+}
+
+build(svg);
+
+/* ── Theme toggle ── */
+document.getElementById('themeBtn').addEventListener('click',()=>{
+  const r=document.documentElement;
+  const cur=r.getAttribute('data-theme');
+  r.setAttribute('data-theme',cur==='dark'?'light':'dark');
+  build(svg);
+});
+</script>

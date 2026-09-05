@@ -7,6 +7,8 @@ Evidence from the August 2026 Drought Event. Working paper, September 2026.
 https://doi.org/10.5281/zenodo.22411012.
 szabo.tunde@geoinsight.hu
 
+[![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.22411012.svg)](https://doi.org/10.5281/zenodo.22411012)
+
 ---
 
 > ⚠️ **Work in progress — not for citation without author permission.**  
@@ -75,6 +77,7 @@ EFAS v5 reference cell: **46.37°N, 18.74°E** (~29 km SSW of Paks), variable `d
 Szabó, T. (2026). Transboundary Climate–Nuclear Risk on the Danube:
 Evidence from the August 2026 Drought Event. Working paper, September 2026.
 szabo.tunde@geoinsight.hu
+https://doi.org/10.5281/zenodo.22411012
 ```
 
 ---

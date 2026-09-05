@@ -2,10 +2,7 @@
 ## Evidence from the August 2026 Drought Event
 
 **Working paper · September 2026**  
-Szabó, T. (2026). Transboundary Climate–Nuclear Risk on the Danube:
-Evidence from the August 2026 Drought Event. Working paper, September 2026.
-https://doi.org/10.5281/zenodo.22411012.
-szabo.tunde@geoinsight.hu
+Tünde Szabó · szabo.tunde@geoinsight.hu
 
 [![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.22411012.svg)](https://doi.org/10.5281/zenodo.22411012)
 
@@ -22,6 +19,24 @@ The August 2026 Danube drought simultaneously reduced cooling-water availability
 
 Total verified generation loss: **1,784 GWh** (29-year low).  
 Joint return period of simultaneous thermal + hydraulic stress: **~103 yr** (Gumbel copula, τ = 0.55) vs ~841 yr under the independence assumption — a **4.3× overestimate** if dependence is ignored at T = 10 yr.
+
+---
+
+## Interactive figures
+
+### Supplementary Figures 1–3 — discharge record, corridor map, copula joint RP
+
+[![Supplementary Figures 1–3](preview_figures.png)](https://gienahdata.github.io/danube-nuclear-drought-2026/danube_figures.html)
+
+▶ **[Open interactive figures](https://gienahdata.github.io/danube-nuclear-drought-2026/danube_figures.html)**
+
+---
+
+### Heat-stress capacity-factor chart — Paks, Kozloduy, Cernavodă (Jul–Aug 2026)
+
+[![Heat-stress capacity-factor chart](preview_heat.png)](https://gienahdata.github.io/danube-nuclear-drought-2026/heat_stress.html)
+
+▶ **[Open interactive chart](https://gienahdata.github.io/danube-nuclear-drought-2026/heat_stress.html)**
 
 ---
 
@@ -71,12 +86,11 @@ EFAS v5 reference cell: **46.37°N, 18.74°E** (~29 km SSW of Paks), variable `d
 
 ---
 
-## Citation (working paper)
+## Citation
 
 ```
 Szabó, T. (2026). Transboundary Climate–Nuclear Risk on the Danube:
 Evidence from the August 2026 Drought Event. Working paper, September 2026.
-szabo.tunde@geoinsight.hu
 https://doi.org/10.5281/zenodo.22411012
 ```
 

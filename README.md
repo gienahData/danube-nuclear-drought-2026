@@ -4,7 +4,16 @@
 **Working paper · September 2026**  
 Tünde Szabó · szabo.tunde@geoinsight.hu
 
+<div align="center">
+
 [![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.22411012.svg)](https://doi.org/10.5281/zenodo.22411012)
+
+| | |
+|:---:|:---:|:---:|
+| [**📄 Read the paper**](https://doi.org/10.5281/zenodo.22411012) | [**🌡️ Heat-stress dashboard**](https://gienahdata.github.io/danube-nuclear-drought-2026/heat_stress.html) | [**📊 Supplementary figures**](https://gienahdata.github.io/danube-nuclear-drought-2026/danube_figures.html) |
+| Zenodo · PDF + DOCX | Capacity factors · Paks · Kozloduy · Cernavodă | Discharge record · corridor map · copula RP |
+
+</div>
 
 ---
 
@@ -24,19 +33,19 @@ Joint return period of simultaneous thermal + hydraulic stress: **~103 yr** (Gum
 
 ## Interactive figures
 
-### Supplementary Figures 1–3 — discharge record, corridor map, copula joint RP
-
-[![Supplementary Figures 1–3](preview_figures.png)](https://gienahdata.github.io/danube-nuclear-drought-2026/danube_figures.html)
-
-▶ **[Open interactive figures](https://gienahdata.github.io/danube-nuclear-drought-2026/danube_figures.html)**
-
----
-
-### Heat-stress capacity-factor chart — Paks, Kozloduy, Cernavodă (Jul–Aug 2026)
+### 🌡️ Heat-stress dashboard — Paks, Kozloduy, Cernavodă (Jul–Aug 2026)
 
 [![Heat-stress capacity-factor chart](preview_heat.png)](https://gienahdata.github.io/danube-nuclear-drought-2026/heat_stress.html)
 
-▶ **[Open interactive chart](https://gienahdata.github.io/danube-nuclear-drought-2026/heat_stress.html)**
+▶ **[Open interactive dashboard](https://gienahdata.github.io/danube-nuclear-drought-2026/heat_stress.html)**
+
+---
+
+### 📊 Supplementary Figures 1–3 — discharge record, corridor map, copula joint RP
+
+[![Supplementary Figures 1–3](preview_figures.png)](https://gienahdata.github.io/danube-nuclear-drought-2026/danube_figures.html)
+
+▶ **[Open supplementary figures](https://gienahdata.github.io/danube-nuclear-drought-2026/danube_figures.html)**
 
 ---
 
